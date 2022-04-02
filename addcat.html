@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cats</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"></a>
+        <nav>
+            <a href="/index.html">Главная</a>
+            <a href="/addcat.html">Добавить кота</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Добавить котика</h1>
+        <form id="addCat">
+            <input type="number" name="id" placeholder="Порядковый номер" required>
+            <input type="text" name="name" placeholder="Имя" required>
+            <input type="number" name="age" placeholder="Возраст">
+            <input type="number" name="rate" placeholder="Рейтинг">
+            <input type="text" name="favourite" placeholder="Любимчик?">
+            <input type="text" name="img_link" placeholder="Картинка">
+            <textarea name="description" placeholder="Еще немного о питомце"></textarea>
+            <button type="submit">Добавить</button>
+        </form>
+    </main>
+    <footer>&copy;2022</footer>
+    <script>
+        let path = {
+            getAll: "http://sb-cats.herokuapp.com/api/2/VicIllar/show",
+            getOne: "http://sb-cats.herokuapp.com/api/2/VicIllar/show/",
+            getId: "http://sb-cats.herokuapp.com/api/2/VicIllar/ids",
+            add: "http://sb-cats.herokuapp.com/api/2/VicIllar/add",
+            upd: "http://sb-cats.herokuapp.com/api/2/VicIllar/update/",
+            del: "http://sb-cats.herokuapp.com/api/2/VicIllar/delete/"
+        }
+        document.forms.addCat.addEventListener("submit", function(e) {
+            e.preventDefault();
+            let body = {};
+            for (let i = 0; i < this.elements.length; i++) {
+                let el = this.elements[i];
+                if (el.name) {
+                    body[el.name] = el.value;
+                }
+            }
+            body.favourite = !!body.favourite;
+            console.log(body);
+            console.log(JSON.stringify(body));
+            fetch(path.add, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+                .then(res => res.json())
+                .then(result => {
+                    console.log(result);
+                    if (result.message === "ok") {
+                        this.reset();
+                    }
+                })
+        });
+    </script>
+</body>
+</html>
